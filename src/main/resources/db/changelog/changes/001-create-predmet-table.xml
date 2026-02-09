@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="001-create-predmet-table" author="karton-predmeta">
+        <createTable tableName="predmet">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="sifra" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="naziv" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="espb" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="semestar" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="godina_studija" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="tip_predmeta" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="broj_casova_predavanja" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="broj_casova_vezbi" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
