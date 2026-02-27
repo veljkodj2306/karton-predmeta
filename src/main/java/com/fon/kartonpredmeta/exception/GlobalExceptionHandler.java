@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ApiError> handleConflict(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleConflict(ConflictException ex, HttpServletRequest request) {
         ApiError body = new ApiError(
                 LocalDateTime.now(), 409, "Conflict", ex.getMessage(), request.getRequestURI(), null);
 
@@ -100,7 +100,7 @@ public class GlobalExceptionHandler {
                 null
         );
 
-        
+
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 }
