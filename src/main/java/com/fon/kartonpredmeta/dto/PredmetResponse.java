@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -22,5 +24,12 @@ public class PredmetResponse {
     private TipPredmeta tipPredmeta;
     private int brojCasovaPredavanja;
     private int brojCasovaVezbi;
+
+    private List<String> nastavnici;
+    private String ciljPredmeta;
+    private String ishodPredmeta;
+    private String sadrzajPredmeta;
+
+    private List<LiteraturaDTO> literatura;
 
 }

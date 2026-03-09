@@ -1,11 +1,14 @@
 package com.fon.kartonpredmeta.dto;
 
 import com.fon.kartonpredmeta.entity.TipPredmeta;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -50,4 +53,15 @@ public class PredmetCreateRequest {
     @Min(value = 0, message = "Broj casova vezbi ne moze biti negativan")
     @Max(value = 30, message = "Broj casova vezbi je prevelik")
     private Integer brojCasovaVezbi;
+
+    @NotEmpty(message = "Morate uneti nastavnike")
+    private List<String> nastavnici;
+
+    private String ciljPredmeta;
+    private String ishodPredmeta;
+    private String sadrzajPredmeta;
+
+
+    @Valid
+    private List<LiteraturaDTO> literatura;
 }

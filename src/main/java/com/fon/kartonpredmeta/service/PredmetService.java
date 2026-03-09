@@ -1,13 +1,16 @@
 package com.fon.kartonpredmeta.service;
 
 
+import com.fon.kartonpredmeta.dto.LiteraturaDTO;
 import com.fon.kartonpredmeta.dto.PredmetCreateRequest;
 import com.fon.kartonpredmeta.dto.PredmetResponse;
 import com.fon.kartonpredmeta.dto.PredmetUpdateRequest;
+import com.fon.kartonpredmeta.entity.Literatura;
 import com.fon.kartonpredmeta.entity.Predmet;
 import com.fon.kartonpredmeta.exception.ConflictException;
 import com.fon.kartonpredmeta.exception.NotFoundException;
 import com.fon.kartonpredmeta.mapper.PredmetMapper;
+import com.fon.kartonpredmeta.repository.LiteraturaRepository;
 import com.fon.kartonpredmeta.repository.PredmetRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +21,14 @@ public class PredmetService {
 
     private final PredmetRepository predmetRepository;
     private final PredmetMapper predmetMapper;
+    private final LiteraturaRepository literaturaRepository;
 
 
-    public PredmetService(PredmetRepository predmetRepository, PredmetMapper predmetMapper) {
+    public PredmetService(PredmetRepository predmetRepository, PredmetMapper predmetMapper, LiteraturaRepository literaturaRepository) {
 
         this.predmetRepository = predmetRepository;
         this.predmetMapper = predmetMapper;
+        this.literaturaRepository = literaturaRepository;
     }
 
     public PredmetResponse findBySifra(String sifra) {
@@ -42,6 +47,10 @@ public class PredmetService {
         }
 
         Predmet predmet = predmetMapper.toEntity(request);
+        if (request.getLiteratura() != null) {
+            predmet.setLiteratura(request.getLiteratura().stream().
+                    map(this::kreirajIliPronadjiLiteraturu).toList());
+        }
         Predmet saved = predmetRepository.save(predmet);
         return predmetMapper.toResponse(saved);
     }
@@ -75,6 +84,10 @@ public class PredmetService {
         }
 
         predmetMapper.update(request, predmet);
+        if (request.getLiteratura() != null) {
+            predmet.setLiteratura(request.getLiteratura().stream()
+                    .map(this::kreirajIliPronadjiLiteraturu).toList());
+        }
         predmetRepository.save(predmet);
 
         return predmetMapper.toResponse(predmet);
@@ -87,6 +100,22 @@ public class PredmetService {
         predmetRepository.delete(predmet);
     }
 
+
+    public Literatura kreirajIliPronadjiLiteraturu(LiteraturaDTO literaturaDTO) {
+
+        Literatura postojeca = literaturaRepository.findByNaslovAndAutorAndGodina(literaturaDTO.getNaslov(),
+                literaturaDTO.getAutor(), literaturaDTO.getGodina());
+
+        if (postojeca != null) {
+            return postojeca;
+        }
+
+        Literatura novaLiteratura = predmetMapper.toLiteratura(literaturaDTO);
+
+
+        return literaturaRepository.save(novaLiteratura);
+
+    }
 
 }
 
