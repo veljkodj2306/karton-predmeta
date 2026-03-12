@@ -7,13 +7,16 @@ import com.fon.kartonpredmeta.dto.PredmetUpdateRequest;
 import com.fon.kartonpredmeta.exception.ApiError;
 import com.fon.kartonpredmeta.service.PredmetService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/predmeti")
 @Tag(name = "Predmeti", description = "CRUD nad predmetima")
+@Validated
 public class PredmetController {
 
 
@@ -87,6 +91,18 @@ public class PredmetController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePredmet(@PathVariable Long id) {
         predmetService.delete(id);
+    }
+
+
+    @Operation(summary = "Trazenje predmeta na osnovu naslova literature")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Predmeti pronadjeni"),
+            @ApiResponse(responseCode = "400", description = "Naslov nije pravilno unet",
+                    content = @Content(schema = @Schema(implementation = ApiError.class)))})
+    @GetMapping("/trazi-po-literaturi")
+    public List<PredmetResponse> traziPoLiteraturi(@Parameter(description = "Naslov literature po kom se pretrazuju predmeti ")
+                                                   @RequestParam @NotBlank(message = "Naslov literature je obavezan") String naslov) {
+
+        return predmetService.traziPoLiteraturi(naslov);
     }
 
 

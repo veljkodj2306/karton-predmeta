@@ -14,6 +14,7 @@ import com.fon.kartonpredmeta.repository.LiteraturaRepository;
 import com.fon.kartonpredmeta.repository.PredmetRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -85,9 +86,11 @@ public class PredmetService {
 
         predmetMapper.update(request, predmet);
         if (request.getLiteratura() != null) {
-            predmet.setLiteratura(request.getLiteratura().stream()
+            List<Literatura> novaLiteratura = new ArrayList<>(request.getLiteratura().stream()
                     .map(this::kreirajIliPronadjiLiteraturu).toList());
+            predmet.setLiteratura(novaLiteratura);
         }
+
         predmetRepository.save(predmet);
 
         return predmetMapper.toResponse(predmet);
@@ -115,6 +118,21 @@ public class PredmetService {
 
         return literaturaRepository.save(novaLiteratura);
 
+    }
+
+    public List<PredmetResponse> traziPoLiteraturi(String naslov) {
+        List<Predmet> sviPredmeti = predmetRepository.findAll();
+        List<PredmetResponse> rezultat = new ArrayList<>();
+
+        for (Predmet predmet : sviPredmeti) {
+            for (Literatura literatura : predmet.getLiteratura()) {
+                if (literatura.getNaslov().equalsIgnoreCase(naslov)) {
+                    rezultat.add(predmetMapper.toResponse(predmet));
+                    break;
+                }
+            }
+        }
+        return rezultat;
     }
 
 }

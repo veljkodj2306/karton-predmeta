@@ -12,18 +12,21 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface PredmetMapper {
 
+    @Mapping(target = "literatura", source = "literatura")
     PredmetResponse toResponse(Predmet predmet);
 
     @Mapping(target = "id", ignore = true)
     Predmet toEntity(PredmetCreateRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "literatura", ignore = true)
     @Mapping(target = "id", ignore = true)
     void update(PredmetUpdateRequest request, @MappingTarget Predmet predmet);
 
 
     LiteraturaDTO toLiteraturaDTO(Literatura literatura);
 
+    @Mapping(target = "id", ignore = true)
     Literatura toLiteratura(LiteraturaDTO literaturaDTO);
 
 }

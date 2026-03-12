@@ -1,6 +1,7 @@
 package com.fon.kartonpredmeta.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,5 +103,25 @@ public class GlobalExceptionHandler {
 
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
+
+
+        String message = ex.getConstraintViolations().iterator().next().getMessage();
+
+
+        ApiError body = new ApiError(
+                LocalDateTime.now(),
+                400,
+                "Bad Request",
+                message,
+                request.getRequestURI(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+
     }
 }
