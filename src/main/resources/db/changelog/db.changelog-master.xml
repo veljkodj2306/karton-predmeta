@@ -12,5 +12,6 @@
     <include file="changes/004-create-predmet-literatura-join-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/005-create-predmet-nastavnici-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/006-drop-nastavnici-column-from-predmet.xml" relativeToChangelogFile="true"/>
+    <include file="changes/007-insert-initial-data.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
