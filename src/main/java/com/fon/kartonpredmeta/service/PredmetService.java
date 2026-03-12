@@ -7,6 +7,7 @@ import com.fon.kartonpredmeta.dto.PredmetResponse;
 import com.fon.kartonpredmeta.dto.PredmetUpdateRequest;
 import com.fon.kartonpredmeta.entity.Literatura;
 import com.fon.kartonpredmeta.entity.Predmet;
+import com.fon.kartonpredmeta.exception.BadRequestException;
 import com.fon.kartonpredmeta.exception.ConflictException;
 import com.fon.kartonpredmeta.exception.NotFoundException;
 import com.fon.kartonpredmeta.mapper.PredmetMapper;
@@ -82,6 +83,14 @@ public class PredmetService {
             }
 
 
+        }
+
+        if (request.getNaziv() != null && request.getNaziv().isBlank()) {
+            throw new BadRequestException("Naziv ne moze da bude prazan");
+        }
+
+        if (request.getSifra() != null && request.getSifra().isBlank()) {
+            throw new BadRequestException("Sifra ne moze da bude prazna");
         }
 
         predmetMapper.update(request, predmet);
