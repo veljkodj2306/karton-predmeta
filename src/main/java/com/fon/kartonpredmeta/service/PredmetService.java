@@ -48,6 +48,12 @@ public class PredmetService {
             throw new ConflictException("Predmet sa ovom siform postoji");
         }
 
+        for (String nastavnik : request.getNastavnici()) {
+            if (nastavnik == null || nastavnik.isBlank()) {
+                throw new BadRequestException("Ime nastavnika ne sme da bude prazno");
+            }
+        }
+
         Predmet predmet = predmetMapper.toEntity(request);
         if (request.getLiteratura() != null) {
             predmet.setLiteratura(request.getLiteratura().stream().
@@ -91,6 +97,14 @@ public class PredmetService {
 
         if (request.getSifra() != null && request.getSifra().isBlank()) {
             throw new BadRequestException("Sifra ne moze da bude prazna");
+        }
+
+        if (request.getNastavnici() != null) {
+            for (String nastavnik : request.getNastavnici()) {
+                if (nastavnik == null || nastavnik.isBlank()) {
+                    throw new BadRequestException("Ime nastavnika ne sme d abude prazno");
+                }
+            }
         }
 
         predmetMapper.update(request, predmet);
