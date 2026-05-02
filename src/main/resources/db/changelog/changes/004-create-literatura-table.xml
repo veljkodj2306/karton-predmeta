@@ -6,31 +6,20 @@
            http://www.liquibase.org/xml/ns/dbchangelog
            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
 
-    <changeSet id="001-create-predmet-table" author="veljko">
-        <createTable tableName="predmet">
+    <changeSet id="004-create-literatura-table" author="veljko">
+        <createTable tableName="literatura">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="naziv" type="VARCHAR(255)">
+            <column name="naslov" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="sifra" type="VARCHAR(30)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="espb" type="INT">
+            <column name="autor" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="broj_casova_predavanja" type="INT">
+            <column name="godina" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column name="broj_casova_vezbi" type="INT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="broj_casova_lab" type="INT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="cilj_predmeta" type="TEXT"/>
-            <column name="sadrzaj_predmeta" type="TEXT"/>
         </createTable>
     </changeSet>
 

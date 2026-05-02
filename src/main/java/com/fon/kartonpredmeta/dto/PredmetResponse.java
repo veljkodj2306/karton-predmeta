@@ -1,6 +1,5 @@
 package com.fon.kartonpredmeta.dto;
 
-import com.fon.kartonpredmeta.entity.TipPredmeta;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,17 +18,17 @@ public class PredmetResponse {
     private String naziv;
     private String sifra;
     private int espb;
-    private int semestar;
-    private int godinaStudija;
-    private TipPredmeta tipPredmeta;
     private int brojCasovaPredavanja;
     private int brojCasovaVezbi;
+    private int brojCasovaLab;
 
-    private List<String> nastavnici;
     private String ciljPredmeta;
-    private String ishodPredmeta;
     private String sadrzajPredmeta;
 
     private List<LiteraturaDTO> literatura;
+
+    private List<IshodDTO> ishodi;
+
+    private List<IzvodjenjeDTO> izvodjenja;
 
 }

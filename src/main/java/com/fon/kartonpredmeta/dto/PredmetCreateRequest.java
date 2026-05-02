@@ -1,6 +1,5 @@
 package com.fon.kartonpredmeta.dto;
 
-import com.fon.kartonpredmeta.entity.TipPredmeta;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -29,19 +28,6 @@ public class PredmetCreateRequest {
     @Max(value = 30, message = "ESPB ne moze biti veci od 30")
     private Integer espb;
 
-    @NotNull(message = "Semestar je obavezan")
-    @Min(value = 1, message = "Semestar mora biti najmanje 1")
-    @Max(value = 12, message = "Semestar moze biti najvise 12")
-    private Integer semestar;
-
-
-    @NotNull(message = "Godina studija je obavezna")
-    @Min(value = 1, message = "Godina studija mora biti najmanje 1")
-    @Max(value = 6, message = "Godina studija moze biti najvise 6")
-    private Integer godinaStudija;
-
-    @NotNull(message = "Tip predmeta je obavezan (IZBORNI/OBAVEZAN)")
-    private TipPredmeta tipPredmeta;
 
     @NotNull(message = "Broj casova predavanja je obavezan")
     @Min(value = 0, message = "Broj casova predavanja ne moze biti negativan")
@@ -54,14 +40,23 @@ public class PredmetCreateRequest {
     @Max(value = 30, message = "Broj casova vezbi je prevelik")
     private Integer brojCasovaVezbi;
 
-    @NotEmpty(message = "Morate uneti nastavnike")
-    private List<String> nastavnici;
+    @NotNull(message = "Broj casova laboratorijskih vezbi je obavezan")
+    @Min(value = 0, message = "Broj casova laboratorijskih vezbi ne moze biti negativan")
+    @Max(value = 30, message = "Broj casova laboratorijskih vezbi je prevelik")
+    private Integer brojCasovaLab;
 
     private String ciljPredmeta;
-    private String ishodPredmeta;
     private String sadrzajPredmeta;
 
 
     @Valid
     private List<LiteraturaDTO> literatura;
+
+    @NotEmpty(message = "Mora imati bar jedan ishod")
+    private List<Long> ishodIds;
+
+
+    @NotEmpty(message = "Unesite bar jedno izvodjenje")
+    @Valid
+    private List<IzvodjenjeRequest> izvodjenja;
 }

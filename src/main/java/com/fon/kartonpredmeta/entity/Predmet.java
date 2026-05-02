@@ -30,15 +30,6 @@ public class Predmet {
     @Column(name = "espb")
     private int espb;
 
-    @Column(name = "semestar")
-    private int semestar;
-
-    @Column(name = "godina_studija")
-    private int godinaStudija;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tip_predmeta")
-    private TipPredmeta tipPredmeta;
 
     @Column(name = "broj_casova_predavanja")
     private int brojCasovaPredavanja;
@@ -46,16 +37,12 @@ public class Predmet {
     @Column(name = "broj_casova_vezbi")
     private int brojCasovaVezbi;
 
-    @ElementCollection
-    @CollectionTable(name = "predmet_nastavnici", joinColumns = @JoinColumn(name = "predmet_id"))
-    @Column(name = "nastavnik")
-    private List<String> nastavnici = new ArrayList<>();
+    @Column(name = "broj_casova_lab")
+    private int brojCasovaLab;
 
     @Column(name = "cilj_predmeta")
     private String ciljPredmeta;
 
-    @Column(name = "ishod_predmeta")
-    private String ishodPredmeta;
 
     @Column(name = "sadrzaj_predmeta")
     private String sadrzajPredmeta;
@@ -65,4 +52,12 @@ public class Predmet {
             inverseJoinColumns = @JoinColumn(name = "literatura_id"))
     private List<Literatura> literatura = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(name = "predmet_ishod",
+            joinColumns = @JoinColumn(name = "predmet_id"),
+            inverseJoinColumns = @JoinColumn(name = "ishod_id"))
+    private List<Ishod> ishodi = new ArrayList<>();
+
+    @OneToMany(mappedBy = "predmet")
+    private List<Izvodjenje> izvodjenja = new ArrayList<>();
 }

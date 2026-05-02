@@ -1,7 +1,6 @@
 package com.fon.kartonpredmeta.dto;
 
 
-import com.fon.kartonpredmeta.entity.TipPredmeta;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -29,15 +28,6 @@ public class PredmetUpdateRequest {
     @Max(value = 30, message = "ESPB moze biti najvise 30")
     private Integer espb;
 
-    @Min(value = 1, message = "Semestar mora biti najmanje 1")
-    @Max(value = 12, message = "Semestar moze biti najvise 12")
-    private Integer semestar;
-
-    @Min(value = 1, message = "Godina studija mora biti najmanje 1")
-    @Max(value = 6, message = "Godina studija moze biti najvise 6")
-    private Integer godinaStudija;
-
-    private TipPredmeta tipPredmeta;
 
     @Min(value = 0, message = "Broj casova predavanja ne moze biti negativan")
     @Max(value = 30, message = "Broj casova predavanja je prevelik")
@@ -48,16 +38,22 @@ public class PredmetUpdateRequest {
     @Max(value = 30, message = "Broj casova vezbi je prevelik")
     private Integer brojCasovaVezbi;
 
+    @Min(value = 0, message = "Broj casova laboratorijskih vezbi ne moze biti negativan")
+    @Max(value = 30, message = "Broj casova laboratorijskih vezbi je prevelik")
+    private Integer brojCasovaLab;
+
 
     private String ciljPredmeta;
-    private String ishodPredmeta;
     private String sadrzajPredmeta;
-
-    private List<String> nastavnici;
 
 
     @Valid
     private List<LiteraturaDTO> literatura;
 
+
+    private List<Long> ishodIds;
+
+    @Valid
+    private List<IzvodjenjeRequest> izvodjenja;
 
 }

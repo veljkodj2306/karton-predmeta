@@ -7,11 +7,9 @@
            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
 
     <include file="changes/001-create-predmet-table.xml" relativeToChangelogFile="true"/>
-    <include file="changes/002-add-fields-to-predmet.xml" relativeToChangelogFile="true"/>
-    <include file="changes/003-create-literatura-table.xml" relativeToChangelogFile="true"/>
-    <include file="changes/004-create-predmet-literatura-join-table.xml" relativeToChangelogFile="true"/>
-    <include file="changes/005-create-predmet-nastavnici-table.xml" relativeToChangelogFile="true"/>
-    <include file="changes/006-drop-nastavnici-column-from-predmet.xml" relativeToChangelogFile="true"/>
-    <include file="changes/007-insert-initial-data.xml" relativeToChangelogFile="true"/>
+    <include file="changes/002-create-nastavnik-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/003-create-ishod-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/004-create-literatura-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/005-create-izvodjenje-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
