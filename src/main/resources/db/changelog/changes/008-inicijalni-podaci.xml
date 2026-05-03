@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="008-inicijalni-podaci" author="veljko">
+
+        <insert tableName="nastavnik">
+            <column name="id" valueNumeric="1"/>
+            <column name="ime" value="Petar"/>
+            <column name="prezime" value="Petrovic"/>
+            <column name="zvanje" value="Asistent"/>
+        </insert>
+        <insert tableName="nastavnik">
+            <column name="id" valueNumeric="2"/>
+            <column name="ime" value="Ana"/>
+            <column name="prezime" value="Anic"/>
+            <column name="zvanje" value="Docent"/>
+        </insert>
+        <insert tableName="nastavnik">
+            <column name="id" valueNumeric="3"/>
+            <column name="ime" value="Marko"/>
+            <column name="prezime" value="Markovic"/>
+            <column name="zvanje" value="Vanredni profesor"/>
+        </insert>
+        <insert tableName="nastavnik">
+            <column name="id" valueNumeric="4"/>
+            <column name="ime" value="Milica"/>
+            <column name="prezime" value="Milicevic"/>
+            <column name="zvanje" value="Redovni profesor"/>
+        </insert>
+
+        <insert tableName="ishod">
+            <column name="id" valueNumeric="1"/>
+            <column name="naziv" value="Matematika ishod"/>
+        </insert>
+        <insert tableName="ishod">
+            <column name="id" valueNumeric="2"/>
+            <column name="naziv" value="Fizika ishod"/>
+        </insert>
+        <insert tableName="ishod">
+            <column name="id" valueNumeric="3"/>
+            <column name="naziv" value="Programiranje ishod"/>
+        </insert>
+
+        <insert tableName="literatura">
+            <column name="id" valueNumeric="1"/>
+            <column name="naslov" value="Matematika literatura"/>
+            <column name="autor" value="Petar Petrovic"/>
+            <column name="godina" valueNumeric="2018"/>
+        </insert>
+        <insert tableName="literatura">
+            <column name="id" valueNumeric="2"/>
+            <column name="naslov" value="Fizika literatura"/>
+            <column name="autor" value="Ana Anic"/>
+            <column name="godina" valueNumeric="2019"/>
+        </insert>
+        <insert tableName="literatura">
+            <column name="id" valueNumeric="3"/>
+            <column name="naslov" value="Programiranje literatura"/>
+            <column name="autor" value="Marko Markovic"/>
+            <column name="godina" valueNumeric="2020"/>
+        </insert>
+
+        <insert tableName="predmet">
+            <column name="id" valueNumeric="1"/>
+            <column name="naziv" value="Matematika 1"/>
+            <column name="sifra" value="MAT101"/>
+            <column name="espb" valueNumeric="8"/>
+            <column name="broj_casova_predavanja" valueNumeric="3"/>
+            <column name="broj_casova_vezbi" valueNumeric="2"/>
+            <column name="broj_casova_lab" valueNumeric="0"/>
+            <column name="cilj_predmeta" value="Usvajanje osnova matematike"/>
+            <column name="sadrzaj_predmeta" value="Skupovi, funkcije, nizovi"/>
+        </insert>
+        <insert tableName="predmet">
+            <column name="id" valueNumeric="2"/>
+            <column name="naziv" value="Fizika 1"/>
+            <column name="sifra" value="FIZ101"/>
+            <column name="espb" valueNumeric="7"/>
+            <column name="broj_casova_predavanja" valueNumeric="2"/>
+            <column name="broj_casova_vezbi" valueNumeric="2"/>
+            <column name="broj_casova_lab" valueNumeric="1"/>
+            <column name="cilj_predmeta" value="Usvajanje osnova fizike"/>
+            <column name="sadrzaj_predmeta" value="Mehanika, termodinamika, optika"/>
+        </insert>
+        <insert tableName="predmet">
+            <column name="id" valueNumeric="3"/>
+            <column name="naziv" value="Programiranje 1"/>
+            <column name="sifra" value="PRG101"/>
+            <column name="espb" valueNumeric="7"/>
+            <column name="broj_casova_predavanja" valueNumeric="2"/>
+            <column name="broj_casova_vezbi" valueNumeric="2"/>
+            <column name="broj_casova_lab" valueNumeric="2"/>
+            <column name="cilj_predmeta" value="Usvajanje osnova programiranja"/>
+            <column name="sadrzaj_predmeta" value="Promenljive, petlje, funkcije"/>
+        </insert>
+
+        <insert tableName="predmet_ishod">
+            <column name="predmet_id" valueNumeric="1"/>
+            <column name="ishod_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="predmet_ishod">
+            <column name="predmet_id" valueNumeric="2"/>
+            <column name="ishod_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="predmet_ishod">
+            <column name="predmet_id" valueNumeric="3"/>
+            <column name="ishod_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="predmet_literatura">
+            <column name="predmet_id" valueNumeric="1"/>
+            <column name="literatura_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="predmet_literatura">
+            <column name="predmet_id" valueNumeric="2"/>
+            <column name="literatura_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="predmet_literatura">
+            <column name="predmet_id" valueNumeric="3"/>
+            <column name="literatura_id" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="izvodjenje">
+            <column name="id" valueNumeric="1"/>
+            <column name="oblik_nastave" value="PREDAVANJA"/>
+            <column name="predmet_id" valueNumeric="1"/>
+            <column name="nastavnik_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="izvodjenje">
+            <column name="id" valueNumeric="2"/>
+            <column name="oblik_nastave" value="VEZBE"/>
+            <column name="predmet_id" valueNumeric="1"/>
+            <column name="nastavnik_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="izvodjenje">
+            <column name="id" valueNumeric="3"/>
+            <column name="oblik_nastave" value="PREDAVANJA"/>
+            <column name="predmet_id" valueNumeric="2"/>
+            <column name="nastavnik_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="izvodjenje">
+            <column name="id" valueNumeric="4"/>
+            <column name="oblik_nastave" value="LABORATORIJSKE_VEZBE"/>
+            <column name="predmet_id" valueNumeric="2"/>
+            <column name="nastavnik_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="izvodjenje">
+            <column name="id" valueNumeric="5"/>
+            <column name="oblik_nastave" value="PREDAVANJA"/>
+            <column name="predmet_id" valueNumeric="3"/>
+            <column name="nastavnik_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="izvodjenje">
+            <column name="id" valueNumeric="6"/>
+            <column name="oblik_nastave" value="VEZBE"/>
+            <column name="predmet_id" valueNumeric="3"/>
+            <column name="nastavnik_id" valueNumeric="4"/>
+        </insert>
+        <insert tableName="izvodjenje">
+            <column name="id" valueNumeric="7"/>
+            <column name="oblik_nastave" value="LABORATORIJSKE_VEZBE"/>
+            <column name="predmet_id" valueNumeric="3"/>
+            <column name="nastavnik_id" valueNumeric="1"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

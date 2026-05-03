@@ -11,5 +11,8 @@
     <include file="changes/003-create-ishod-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/004-create-literatura-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/005-create-izvodjenje-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/006-create-predmet-ishod-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/007-create-predmet-literatura-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/008-inicijalni-podaci.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

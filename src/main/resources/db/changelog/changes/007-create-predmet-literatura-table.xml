@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="007-create-predmet-literatura-table" author="veljko">
+        <createTable tableName="predmet_literatura">
+            <column name="predmet_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="literatura_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="predmet_literatura"
+                       columnNames="predmet_id,literatura_id"
+                       constraintName="pk_predmet_literatura"/>
+
+        <addForeignKeyConstraint
+                baseTableName="predmet_literatura"
+                baseColumnNames="predmet_id"
+                referencedTableName="predmet"
+                referencedColumnNames="id"
+                constraintName="fk_predmet_literatura_predmet"/>
+
+        <addForeignKeyConstraint
+                baseTableName="predmet_literatura"
+                baseColumnNames="literatura_id"
+                referencedTableName="literatura"
+                referencedColumnNames="id"
+                constraintName="fk_predmet_literatura_literatura"/>
+    </changeSet>
+
+</databaseChangeLog>

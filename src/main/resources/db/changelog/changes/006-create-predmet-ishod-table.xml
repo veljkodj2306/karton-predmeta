@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="006-create-predmet-ishod-table" author="veljko">
+        <createTable tableName="predmet_ishod">
+            <column name="predmet_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ishod_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="predmet_ishod"
+                       columnNames="predmet_id,ishod_id"
+                       constraintName="pk_predmet_ishod"/>
+
+        <addForeignKeyConstraint
+                baseTableName="predmet_ishod"
+                baseColumnNames="predmet_id"
+                referencedTableName="predmet"
+                referencedColumnNames="id"
+                constraintName="fk_predmet_ishod_predmet"/>
+
+        <addForeignKeyConstraint
+                baseTableName="predmet_ishod"
+                baseColumnNames="ishod_id"
+                referencedTableName="ishod"
+                referencedColumnNames="id"
+                constraintName="fk_predmet_ishod_ishod"/>
+    </changeSet>
+
+</databaseChangeLog>
