@@ -18,12 +18,14 @@ public interface PredmetMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "ishodi", ignore = true)
     @Mapping(target = "literatura", ignore = true)
+    @Mapping(target = "izvodjenja", ignore = true)
     Predmet toEntity(PredmetCreateRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "literatura", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "ishodi", ignore = true)
+    @Mapping(target = "izvodjenja", ignore = true)
     void update(PredmetUpdateRequest request, @MappingTarget Predmet predmet);
 
 

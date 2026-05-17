@@ -64,9 +64,6 @@ public class GlobalExceptionHandler {
 
         String message = "Neispravan JSON format.";
 
-        if (ex.getMessage() != null && ex.getMessage().contains("TipPredmeta")) {
-            message = "Neispravan tip predmeta, dozvoljene opcije: OBAVEZAN, IZBORNI";
-        }
 
         ApiError body = new ApiError(
                 LocalDateTime.now(),

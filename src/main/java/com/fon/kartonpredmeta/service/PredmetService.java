@@ -129,7 +129,7 @@ public class PredmetService {
             predmet.getIzvodjenja().addAll(novaIzvodjenja);
         }
         predmetRepository.save(predmet);
-     
+
 
         return predmetMapper.toResponse(predmet);
     }
@@ -139,6 +139,7 @@ public class PredmetService {
         Predmet predmet = predmetRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Predmet sa id=" + id + " ne postoji"));
 
+        izvodjenjeRepository.deleteAll(predmet.getIzvodjenja());
         predmetRepository.delete(predmet);
     }
 

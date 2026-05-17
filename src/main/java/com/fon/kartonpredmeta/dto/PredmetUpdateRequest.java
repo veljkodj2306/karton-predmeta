@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PredmetUpdateRequest {
 
-    @Size(max = 255, message = "Naziv moze imati najvise 255 karkatera")
+    @Size(max = 50, message = "Naziv moze imati najvise 50 karkatera")
     private String naziv;
 
     @Size(max = 30, message = "Sifra moze imati najvise 30 karaktera")

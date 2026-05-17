@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +52,7 @@ public class IshodController {
                     content = @Content(schema = @Schema(implementation = ApiError.class)))})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public IshodDTO saveIshod(@RequestBody IshodDTO ishodDTO) {
+    public IshodDTO saveIshod(@Valid @RequestBody IshodDTO ishodDTO) {
         return ishodService.saveIshod(ishodDTO);
     }
 

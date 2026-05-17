@@ -16,7 +16,7 @@ import java.util.List;
 public class PredmetCreateRequest {
 
     @NotBlank(message = "Naziv je obavezan")
-    @Size(max = 255, message = "Naziv moze imati najvise 255 karaktera")
+    @Size(max = 50, message = "Naziv moze imati najvise 50 karaktera")
     private String naziv;
 
     @NotBlank(message = "Sifra je obavezna")

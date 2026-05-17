@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +56,7 @@ public class NastavnikController {
                     content = @Content(schema = @Schema(implementation = ApiError.class)))})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public NastavnikDTO createNastavnik(@RequestBody NastavnikDTO nastavnikDTO) {
+    public NastavnikDTO createNastavnik(@Valid @RequestBody NastavnikDTO nastavnikDTO) {
         Nastavnik nastavnik = nastavnikMapper.toEntity(nastavnikDTO);
         return nastavnikService.save(nastavnik);
     }
@@ -77,7 +78,7 @@ public class NastavnikController {
             @ApiResponse(responseCode = "404", description = "Nastavnik ne postoji",
                     content = @Content(schema = @Schema(implementation = ApiError.class)))})
     @PutMapping("/{id}")
-    public NastavnikDTO updateNastavnik(@PathVariable Long id, @RequestBody NastavnikDTO nastavnikDTO) {
+    public NastavnikDTO updateNastavnik(@PathVariable Long id, @Valid @RequestBody NastavnikDTO nastavnikDTO) {
         return nastavnikService.updateById(nastavnikDTO, id);
     }
 }
