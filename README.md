@@ -1,49 +1,87 @@
-# Karton Predmeta
+Karton Predmeta
 
-Ovaj projekat predstavlja backend REST API aplikaciju čiji je cilj upravljanje kartonom predmeta.
+Ovaj projekat predstavlja Spring Boot aplikaciju za upravljanje kartonom predmeta.
 
-Glavni entitet aplikacije je predmet koji može biti dodat, pregledan, izmenjen i obrisan.
+Glavni entitet aplikacije je predmet. Predmet može biti dodat, pregledan, izmenjen i obrisan.
 
-U aplikaciji takođe postoji funkcionalnost pretrage predmeta na osnovu naslova literature.
+Pored predmeta, aplikacija omogućava rad sa nastavnicima i ishodima. Nastavnici se koriste kod izvođenja nastave, a ishodi predstavljaju šifarnik ishoda učenja koji se vezuju za predmete.
 
-Projekat je razvijen uz pomoć Spring Boot tehnologije, MySQL baze podataka, Liquibase za migracije baze podataka,
+Predmet može imati osnovne podatke, ishode učenja, literaturu i izvođenja nastave. Literatura i izvođenja se mogu dodavati i uklanjati sa predmeta.
 
-Swagger za testiranje endpoint-ova aplikacije kao i biblioteke kao što su Spring Data JPA, MapStruct, Lombok i
+U aplikaciji postoji i jednostavan frontend napravljen kroz HTML, CSS i JavaScript. Frontend koristi REST endpoint-e backend aplikacije.
 
-Bean Validation.
+Projekat je razvijen pomoću Spring Boot-a, MySQL baze podataka, Liquibase-a za migracije baze, Swagger-a za testiranje endpoint-a, kao i biblioteka Spring Data JPA, MapStruct, Lombok i Bean Validation.
 
-## Struktura projekta
+Struktura projekta
 
-Aplikacija ima sledeću strukturu: Controller, Service, Repository, DTO, Entity, Mapper, Exception.
+Aplikacija ima sledeću strukturu:
 
-U ovom projektu kontroler koristi DTO umesto Entity za primanje i obradu zahteva. Dodat
+Controller
+Service
+Repository
+DTO
+Entity
+Mapper
+Exception
 
-je i globalni exception handler.
+Kontroleri koriste DTO klase umesto Entity klasa za primanje i vraćanje podataka. Dodat je i globalni exception handler za obradu grešaka.
 
-## Baza i pokretanje
+Baza i pokretanje
 
-Potrebna je MySQL baza podataka karton_predmeta.
+Potrebna je MySQL baza podataka pod nazivom karton_predmeta.
 
-Treba da se provere podešavanja u application.properties, zatim pokrene klasa KartonPredmetaApplication.
+Pre pokretanja treba proveriti podešavanja u application.properties fajlu.
 
-Pri pokretanju aplikacije Liquibase će kreirati tabele i ubaciti početne podatke za testiranje.
+Aplikacija se pokreće preko klase KartonPredmetaApplication.
 
-## Endpoint-i
+Pri pokretanju aplikacije Liquibase kreira tabele i ubacuje početne podatke za testiranje.
 
-Aplikacija uključuje endpoint-ove:
+Frontend
 
-- `GET /api/predmeti`
-- `GET /api/predmeti/{id}`
-- `POST /api/predmeti`
-- `PUT /api/predmeti/{id}`
-- `DELETE /api/predmeti/{id}`
-- `GET /api/predmeti/trazi-po-literaturi?naslov=...`
+Frontend fajlovi se nalaze u folderu:
 
-## Swagger
+src/main/resources/static
 
-Dokumentacija za Swagger se može pronaći na sledećem linku:
+Dostupne stranice su:
 
-`http://localhost:8080/swagger-ui/index.html`
+http://localhost:8080/predmeti.html
+http://localhost:8080/nastavnici.html
+http://localhost:8080/ishodi.html
+http://localhost:8080/predmet-forma.html
 
-Kroz Swagger možemo testirati sve dostupne endpoint-ove.
+Frontend omogućava pregled, dodavanje, izmenu i brisanje podataka kroz jednostavne stranice.
 
+Endpoint-i
+
+Aplikacija uključuje endpoint-e za predmete:
+
+GET /api/predmeti
+GET /api/predmeti/{id}
+POST /api/predmeti
+PUT /api/predmeti/{id}
+DELETE /api/predmeti/{id}
+DELETE /api/predmeti/literatura/{literaturaId}
+DELETE /api/predmeti/izvodjenja/{izvodjenjeId}
+
+Endpoint-i za nastavnike:
+
+GET /api/nastavnici
+GET /api/nastavnici/{id}
+POST /api/nastavnici
+PUT /api/nastavnici/{id}
+DELETE /api/nastavnici/{id}
+
+Endpoint-i za ishode:
+
+GET /api/ishodi
+GET /api/ishodi/{id}
+POST /api/ishodi
+DELETE /api/ishodi/{id}
+
+Swagger
+
+Swagger dokumentacija se može pronaći na linku:
+
+http://localhost:8080/swagger-ui/index.html
+
+Kroz Swagger se mogu testirati dostupni endpoint-i aplikacije.
