@@ -56,26 +56,39 @@ Frontend omogućava pregled, dodavanje, izmenu i brisanje podataka kroz jednosta
 Aplikacija uključuje endpoint-e za predmete:
 
 GET /api/predmeti
+
 GET /api/predmeti/{id}
+
 POST /api/predmeti
+
 PUT /api/predmeti/{id}
+
 DELETE /api/predmeti/{id}
+
 DELETE /api/predmeti/literatura/{literaturaId}
+
 DELETE /api/predmeti/izvodjenja/{izvodjenjeId}
 
 Endpoint-i za nastavnike:
 
 GET /api/nastavnici
+
 GET /api/nastavnici/{id}
+
 POST /api/nastavnici
+
 PUT /api/nastavnici/{id}
+
 DELETE /api/nastavnici/{id}
 
 Endpoint-i za ishode:
 
 GET /api/ishodi
+
 GET /api/ishodi/{id}
+
 POST /api/ishodi
+
 DELETE /api/ishodi/{id}
 
 # Swagger
