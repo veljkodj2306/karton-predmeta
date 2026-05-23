@@ -12,6 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class IzvodjenjeDTO {
 
+
+    private Long id;
     private Long nastavnikId;
     private String ime;
     private String prezime;

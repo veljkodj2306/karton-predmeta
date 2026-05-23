@@ -106,4 +106,25 @@ public class PredmetController {
     }
 
 
+    @Operation(summary = "Brisanje izvodjenja sa predmeta")
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Izvodjenje obrisano"),
+            @ApiResponse(responseCode = "404", description = "Izvodjenje ne postoji",
+                    content = @Content(schema = @Schema(implementation = ApiError.class)))})
+    @DeleteMapping("/izvodjenja/{izvodjenjeId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteIzvodjenje(@PathVariable Long izvodjenjeId) {
+        predmetService.deleteIzvodjenje(izvodjenjeId);
+    }
+
+
+    @Operation(summary = "Brisanje literature sa predmeta")
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Literatura obrisana"),
+            @ApiResponse(responseCode = "404", description = "Literatura nije pronadjena",
+                    content = @Content(schema = @Schema(implementation = ApiError.class)))})
+    @DeleteMapping("/literatura/{literaturaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLiteratura(@PathVariable Long literaturaId) {
+        predmetService.deleteLiteraturaOdPredmeta(literaturaId);
+    }
+
 }

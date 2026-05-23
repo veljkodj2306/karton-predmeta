@@ -111,7 +111,7 @@ public class PredmetService {
         if (request.getLiteratura() != null) {
             List<Literatura> novaLiteratura = new ArrayList<>(request.getLiteratura().stream()
                     .map(this::kreirajIliPronadjiLiteraturu).toList());
-            predmet.setLiteratura(novaLiteratura);
+            predmet.getLiteratura().addAll(novaLiteratura);
         }
 
         if (request.getIzvodjenja() != null) {
@@ -202,8 +202,21 @@ public class PredmetService {
         return rezultat;
     }
 
+
+    public void deleteIzvodjenje(Long izvodjenjeId) {
+        Izvodjenje izvodjenje = izvodjenjeRepository.findById(izvodjenjeId)
+                .orElseThrow(() -> new NotFoundException("Izvodjenje sa id=" + izvodjenjeId + " ne postoji"));
+
+        izvodjenjeRepository.delete(izvodjenje);
+    }
+
+
+    public void deleteLiteraturaOdPredmeta(Long literaturaId) {
+        Literatura literatura = literaturaRepository.findById(literaturaId)
+                .orElseThrow(() -> new NotFoundException("Literatura sa id=" + literaturaId + " ne postoji"));
+
+        List<Predmet> predmeti = predmetRepository.findByLiteratura_Id(literaturaId);
+        predmeti.forEach(p -> p.getLiteratura().removeIf(l -> l.getId().equals(literaturaId)));
+        predmetRepository.saveAll(predmeti);
+    }
 }
-
-
-
-

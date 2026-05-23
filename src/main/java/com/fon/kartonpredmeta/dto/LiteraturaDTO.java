@@ -14,6 +14,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LiteraturaDTO {
 
+
+    private Long id;
+
     @NotBlank(message = "Naslov jeobavezan")
     private String naslov;
 

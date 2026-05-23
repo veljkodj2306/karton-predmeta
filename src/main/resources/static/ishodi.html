@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ishodi | Karton predmeta</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <nav class="nav">
+        <a class="logo" href="predmeti.html">Karton predmeta</a>
+        <div class="nav-links">
+            <a href="predmeti.html">Predmeti</a>
+            <a href="nastavnici.html">Nastavnici</a>
+            <a href="ishodi.html" class="active">Ishodi</a>
+        </div>
+    </nav>
+</header>
+
+<main class="page">
+    <div id="notice" class="notice"></div>
+
+    <div class="page-header">
+        <div>
+            <h1>Ishodi</h1>
+            <p>Šifarnik ishoda koji se koriste na predmetima.</p>
+        </div>
+        <button class="btn primary" onclick="otvoriModal()">+ Dodaj ishod</button>
+    </div>
+
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Naziv</th>
+                    <th>Akcije</th>
+                </tr>
+                </thead>
+                <tbody id="tabelaBody">
+                <tr>
+                    <td colspan="2" class="empty-row">Učitavanje...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Dodaj ishod</h2>
+            <button class="modal-close" onclick="zatvoriModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Naziv ishoda</label>
+                <input type="text" id="inputNaziv" maxlength="255" placeholder="npr. Student je sposoban da...">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn secondary" onclick="zatvoriModal()">Otkaži</button>
+            <button class="btn primary" onclick="sacuvaj()">Sačuvaj</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = '/api/ishodi';
+    let ishodi = [];
+
+    async function ucitaj() {
+        try {
+            const res = await fetch(API);
+            if (!res.ok) throw new Error('Greška pri učitavanju.');
+            ishodi = await res.json();
+            prikaziTabelu();
+        } catch (e) {
+            prikaziObavest('error', e.message);
+        }
+    }
+
+    function prikaziTabelu() {
+        const body = document.getElementById('tabelaBody');
+        if (ishodi.length === 0) {
+            body.innerHTML = '<tr><td colspan="2" class="empty-row">Nema ishoda.</td></tr>';
+            return;
+        }
+        body.innerHTML = ishodi.map(i => `
+            <tr>
+                <td>${esc(i.naziv)}</td>
+                <td>
+                    <div class="td-actions">
+                        <button class="btn danger sm" onclick="obrisi(${i.id})">Obriši</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function otvoriModal() {
+        document.getElementById('inputNaziv').value = '';
+        document.getElementById('modalBackdrop').classList.add('open');
+    }
+
+    function zatvoriModal() {
+        document.getElementById('modalBackdrop').classList.remove('open');
+    }
+
+    async function sacuvaj() {
+        const naziv = document.getElementById('inputNaziv').value.trim();
+        if (!naziv) {
+            prikaziObavest('error', 'Naziv ishoda je obavezan.');
+            return;
+        }
+
+        try {
+            const res = await fetch(API, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({naziv})
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                prikaziObavest('error', err.message || 'Greška pri čuvanju.');
+                return;
+            }
+
+            zatvoriModal();
+            prikaziObavest('success', 'Ishod je dodat.');
+            await ucitaj();
+        } catch (e) {
+            prikaziObavest('error', 'Greška pri komunikaciji sa serverom.');
+        }
+    }
+
+    async function obrisi(id) {
+        const i = ishodi.find(x => x.id === id);
+        if (!confirm(`Da li ste sigurni da želite da obrišete ishod "${i.naziv}"?\nBiće uklonjen iz svih predmeta.`)) return;
+
+        try {
+            const res = await fetch(`${API}/${id}`, {method: 'DELETE'});
+            if (!res.ok) {
+                const err = await res.json();
+                prikaziObavest('error', err.message || 'Greška pri brisanju.');
+                return;
+            }
+            prikaziObavest('success', 'Ishod je obrisan.');
+            await ucitaj();
+        } catch (e) {
+            prikaziObavest('error', 'Greška pri komunikaciji sa serverom.');
+        }
+    }
+
+    function prikaziObavest(tip, poruka) {
+        const el = document.getElementById('notice');
+        el.textContent = poruka;
+        el.className = `notice ${tip} show`;
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        if (tip === 'success') setTimeout(() => el.className = 'notice', 4000);
+    }
+
+    function esc(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    document.getElementById('modalBackdrop').addEventListener('click', function (e) {
+        if (e.target === this) zatvoriModal();
+    });
+
+    ucitaj();
+</script>
+</body>
+</html>

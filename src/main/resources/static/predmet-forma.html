@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predmet | Karton predmeta</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <nav class="nav">
+        <a class="logo" href="predmeti.html">Karton predmeta</a>
+        <div class="nav-links">
+            <a href="predmeti.html" class="active">Predmeti</a>
+            <a href="nastavnici.html">Nastavnici</a>
+            <a href="ishodi.html">Ishodi</a>
+        </div>
+    </nav>
+</header>
+
+<main class="page">
+    <div id="notice" class="notice"></div>
+
+    <div class="page-header">
+        <div>
+            <h1 id="pageNaslov">Dodaj predmet</h1>
+            <p id="pageOpis">Popunite podatke o predmetu.</p>
+        </div>
+        <a class="btn secondary" href="predmeti.html">← Nazad</a>
+    </div>
+
+    <div class="forma-sekcija">
+        <div class="forma-sekcija-header">
+            <h2>Osnovni podaci</h2>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Naziv predmeta</label>
+                <input type="text" id="naziv" maxlength="50" placeholder="npr. Matematika 1">
+            </div>
+            <div class="form-group">
+                <label>Šifra</label>
+                <input type="text" id="sifra" maxlength="30" placeholder="npr. MAT101">
+            </div>
+        </div>
+        <div class="form-grid three">
+            <div class="form-group">
+                <label>ESPB</label>
+                <input type="number" id="espb" min="1" max="30">
+            </div>
+            <div class="form-group">
+                <label>Čas. predavanja</label>
+                <input type="number" id="brojCasovaPredavanja" min="0" max="30">
+            </div>
+            <div class="form-group">
+                <label>Čas. vežbi</label>
+                <input type="number" id="brojCasovaVezbi" min="0" max="30">
+            </div>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Čas. lab. vežbi</label>
+                <input type="number" id="brojCasovaLab" min="0" max="30">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Cilj predmeta</label>
+            <textarea id="ciljPredmeta" placeholder="Opišite cilj predmeta..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Sadržaj predmeta</label>
+            <textarea id="sadrzajPredmeta" placeholder="Opišite sadržaj predmeta..."></textarea>
+        </div>
+    </div>
+
+    <div class="forma-sekcija">
+        <div class="forma-sekcija-header">
+            <h2>Ishodi učenja</h2>
+        </div>
+        <div id="ishodiGrid" class="checkbox-grid">
+            <p style="color:var(--muted);font-size:14px;">Učitavanje ishoda...</p>
+        </div>
+    </div>
+
+    <div class="forma-sekcija">
+        <div class="forma-sekcija-header">
+            <h2>Literatura</h2>
+            <button class="btn secondary sm" onclick="dodajLiteraturu()">+ Dodaj</button>
+        </div>
+
+        <div id="postojecaLiteraturaLista" class="stavka-lista" style="display:none"></div>
+
+        <div id="novaLiteraturaLista"></div>
+        <p id="literaturaEmpty" style="color:var(--muted);font-size:14px;display:none">Nije dodata literatura.</p>
+    </div>
+
+    <div class="forma-sekcija">
+        <div class="forma-sekcija-header">
+            <h2>Izvođenja</h2>
+            <button class="btn secondary sm" onclick="dodajIzvodjenje()">+ Dodaj</button>
+        </div>
+
+        <div id="postojecaIzvodjenjaLista" class="stavka-lista" style="display:none"></div>
+
+        <div id="novaIzvodjenjaLista"></div>
+        <p id="izvodjenjaEmpty" style="color:var(--muted);font-size:14px;display:none">Nije dodano izvođenje.</p>
+    </div>
+
+    <div class="forma-footer">
+        <a class="btn secondary" href="predmeti.html">Otkaži</a>
+        <button class="btn primary" onclick="sacuvaj()">Sačuvaj predmet</button>
+    </div>
+</main>
+
+<script>
+    const API_PREDMETI = '/api/predmeti';
+    const API_NASTAVNICI = '/api/nastavnici';
+    const API_ISHODI = '/api/ishodi';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('id');
+
+    let sviNastavnici = [];
+    let novaLiteraturaCount = 0;
+    let novaIzvodjenjaCount = 0;
+
+    async function init() {
+        await Promise.all([ucitajNastavnike(), ucitajIshode()]);
+        if (editId) {
+            document.getElementById('pageNaslov').textContent = 'Izmeni predmet';
+            document.getElementById('pageOpis').textContent = 'Izmenite podatke o predmetu.';
+            await ucitajPredmet();
+        } else {
+            proveriPrikazLiterature();
+            proveriPrikazIzvodjenja();
+        }
+    }
+
+    async function ucitajNastavnike() {
+        const res = await fetch(API_NASTAVNICI);
+        sviNastavnici = await res.json();
+    }
+
+    async function ucitajIshode() {
+        const res = await fetch(API_ISHODI);
+        const ishodi = await res.json();
+        const grid = document.getElementById('ishodiGrid');
+        if (ishodi.length === 0) {
+            grid.innerHTML = '<p style="color:var(--muted);font-size:14px;">Nema ishoda u šifarniku.</p>';
+            return;
+        }
+        grid.innerHTML = ishodi.map(i => `
+            <label class="check-card">
+                <input type="checkbox" value="${i.id}" id="ishod_${i.id}">
+                <span>${esc(i.naziv)}</span>
+            </label>
+        `).join('');
+    }
+
+    async function ucitajPredmet() {
+        try {
+            const res = await fetch(`${API_PREDMETI}/${editId}`);
+            if (!res.ok) {
+                prikaziObavest('error', 'Predmet nije pronađen.');
+                return;
+            }
+            const p = await res.json();
+            popuniFormu(p);
+        } catch (e) {
+            prikaziObavest('error', 'Greška pri učitavanju predmeta.');
+        }
+    }
+
+    function popuniFormu(p) {
+        document.getElementById('naziv').value = p.naziv || '';
+        document.getElementById('sifra').value = p.sifra || '';
+        document.getElementById('espb').value = p.espb || '';
+        document.getElementById('brojCasovaPredavanja').value = p.brojCasovaPredavanja || 0;
+        document.getElementById('brojCasovaVezbi').value = p.brojCasovaVezbi || 0;
+        document.getElementById('brojCasovaLab').value = p.brojCasovaLab || 0;
+        document.getElementById('ciljPredmeta').value = p.ciljPredmeta || '';
+        document.getElementById('sadrzajPredmeta').value = p.sadrzajPredmeta || '';
+
+
+        (p.ishodi || []).forEach(i => {
+            const cb = document.getElementById(`ishod_${i.id}`);
+            if (cb) cb.checked = true;
+        });
+
+
+        if (p.literatura && p.literatura.length > 0) {
+            const lista = document.getElementById('postojecaLiteraturaLista');
+            lista.style.display = 'flex';
+            lista.innerHTML = p.literatura.map(l => `
+                <div class="stavka" id="lit_postojeca_${l.id}">
+                    <div class="stavka-info">
+                        <strong>${esc(l.naslov)}</strong>
+                        <span>${esc(l.autor)}, ${esc(l.godina)}</span>
+                    </div>
+                    <button class="btn danger sm" onclick="obrisiLiteraturu(${l.id})">Obriši</button>
+                </div>
+            `).join('');
+        }
+
+
+        if (p.izvodjenja && p.izvodjenja.length > 0) {
+            const lista = document.getElementById('postojecaIzvodjenjaLista');
+            lista.style.display = 'flex';
+            lista.innerHTML = p.izvodjenja.map(i => `
+                <div class="stavka" id="izv_postojece_${i.id}">
+                    <div class="stavka-info">
+                        <strong>${esc(i.ime)} ${esc(i.prezime)}</strong>
+                        <span>${esc(formatOblik(i.oblikNastave))} · ${esc(i.zvanje)}</span>
+                    </div>
+                    <button class="btn danger sm" onclick="obrisiIzvodjenje(${i.id})">Obriši</button>
+                </div>
+            `).join('');
+        }
+
+        proveriPrikazLiterature();
+        proveriPrikazIzvodjenja();
+    }
+
+    async function obrisiLiteraturu(literaturaId) {
+        if (!confirm('Da li ste sigurni da želite da uklonite ovu literaturu sa predmeta?')) return;
+        try {
+            const res = await fetch(`${API_PREDMETI}/literatura/${literaturaId}`, {method: 'DELETE'});
+            if (!res.ok) {
+                const err = await res.json();
+                prikaziObavest('error', err.message || 'Greška pri brisanju.');
+                return;
+            }
+            document.getElementById(`lit_postojeca_${literaturaId}`).remove();
+            proveriPrikazLiterature();
+            prikaziObavest('success', 'Literatura je uklonjena.');
+        } catch (e) {
+            prikaziObavest('error', 'Greška pri komunikaciji sa serverom.');
+        }
+    }
+
+    async function obrisiIzvodjenje(izvodjenjeId) {
+        if (!confirm('Da li ste sigurni da želite da obrišete ovo izvođenje?')) return;
+        try {
+            const res = await fetch(`${API_PREDMETI}/izvodjenja/${izvodjenjeId}`, {method: 'DELETE'});
+            if (!res.ok) {
+                const err = await res.json();
+                prikaziObavest('error', err.message || 'Greška pri brisanju.');
+                return;
+            }
+            document.getElementById(`izv_postojece_${izvodjenjeId}`).remove();
+            proveriPrikazIzvodjenja();
+            prikaziObavest('success', 'Izvođenje je obrisano.');
+        } catch (e) {
+            prikaziObavest('error', 'Greška pri komunikaciji sa serverom.');
+        }
+    }
+
+    function dodajLiteraturu() {
+        const lista = document.getElementById('novaLiteraturaLista');
+        const id = novaLiteraturaCount++;
+        const div = document.createElement('div');
+        div.className = 'inline-row literatura';
+        div.id = `nova_lit_${id}`;
+        div.innerHTML = `
+            <div class="form-group">
+                <label>Naslov</label>
+                <input type="text" class="lit-naslov" placeholder="Naslov knjige" maxlength="255">
+            </div>
+            <div class="form-group">
+                <label>Autor</label>
+                <input type="text" class="lit-autor" placeholder="Ime Prezime" maxlength="255">
+            </div>
+            <div class="form-group">
+                <label>Godina</label>
+                <input type="number" class="lit-godina" min="1950" max="2026">
+            </div>
+            <button class="btn-remove" onclick="ukloniNovaLiteratura('nova_lit_${id}')">✕</button>
+        `;
+        lista.appendChild(div);
+        proveriPrikazLiterature();
+    }
+
+    function ukloniNovaLiteratura(id) {
+        document.getElementById(id).remove();
+        proveriPrikazLiterature();
+    }
+
+    function dodajIzvodjenje() {
+        const lista = document.getElementById('novaIzvodjenjaLista');
+        const id = novaIzvodjenjaCount++;
+        const div = document.createElement('div');
+        div.className = 'inline-row izvodjenje';
+        div.id = `novo_izv_${id}`;
+
+        const opcije = sviNastavnici.map(n =>
+            `<option value="${n.id}">${esc(n.ime)} ${esc(n.prezime)} (${esc(n.zvanje)})</option>`
+        ).join('');
+
+        div.innerHTML = `
+            <div class="form-group">
+                <label>Nastavnik</label>
+                <select class="izv-nastavnik">
+                    <option value="">Izaberite nastavnika</option>
+                    ${opcije}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Oblik nastave</label>
+                <select class="izv-oblik">
+                    <option value="">Izaberite oblik</option>
+                    <option value="PREDAVANJA">Predavanja</option>
+                    <option value="VEZBE">Vežbe</option>
+                    <option value="LABORATORIJSKE_VEZBE">Laboratorijske vežbe</option>
+                </select>
+            </div>
+            <button class="btn-remove" onclick="ukloniNovoIzvodjenje('novo_izv_${id}')">✕</button>
+        `;
+        lista.appendChild(div);
+        proveriPrikazIzvodjenja();
+    }
+
+    function ukloniNovoIzvodjenje(id) {
+        document.getElementById(id).remove();
+        proveriPrikazIzvodjenja();
+    }
+
+    function proveriPrikazLiterature() {
+        const postojeca = document.getElementById('postojecaLiteraturaLista').children.length;
+        const nova = document.getElementById('novaLiteraturaLista').children.length;
+        document.getElementById('literaturaEmpty').style.display = (postojeca + nova === 0) ? 'block' : 'none';
+    }
+
+    function proveriPrikazIzvodjenja() {
+        const postojeca = document.getElementById('postojecaIzvodjenjaLista').children.length;
+        const nova = document.getElementById('novaIzvodjenjaLista').children.length;
+        document.getElementById('izvodjenjaEmpty').style.display = (postojeca + nova === 0) ? 'block' : 'none';
+    }
+
+    function skupiNovaIzvodjenja() {
+        const items = document.querySelectorAll('#novaIzvodjenjaLista .inline-row');
+        const rezultat = [];
+        items.forEach(item => {
+            const nastavnikId = parseInt(item.querySelector('.izv-nastavnik').value);
+            const oblikNastave = item.querySelector('.izv-oblik').value;
+            if (nastavnikId && oblikNastave) rezultat.push({nastavnikId, oblikNastave});
+        });
+        return rezultat;
+    }
+
+    function skupiNovaLiteratura() {
+        const items = document.querySelectorAll('#novaLiteraturaLista .inline-row');
+        const rezultat = [];
+        items.forEach(item => {
+            const naslov = item.querySelector('.lit-naslov').value.trim();
+            const autor = item.querySelector('.lit-autor').value.trim();
+            const godina = parseInt(item.querySelector('.lit-godina').value);
+            if (naslov && autor && godina) rezultat.push({naslov, autor, godina});
+        });
+        return rezultat;
+    }
+
+    function skupiIshodIds() {
+        return Array.from(document.querySelectorAll('#ishodiGrid input[type="checkbox"]:checked'))
+            .map(cb => parseInt(cb.value));
+    }
+
+    async function sacuvaj() {
+        const naziv = document.getElementById('naziv').value.trim();
+        const sifra = document.getElementById('sifra').value.trim();
+        const espb = parseInt(document.getElementById('espb').value);
+        const brojCasovaPredavanja = parseInt(document.getElementById('brojCasovaPredavanja').value) || 0;
+        const brojCasovaVezbi = parseInt(document.getElementById('brojCasovaVezbi').value) || 0;
+        const brojCasovaLab = parseInt(document.getElementById('brojCasovaLab').value) || 0;
+        const ciljPredmeta = document.getElementById('ciljPredmeta').value.trim();
+        const sadrzajPredmeta = document.getElementById('sadrzajPredmeta').value.trim();
+        const ishodIds = skupiIshodIds();
+        const literatura = skupiNovaLiteratura();
+        const izvodjenja = skupiNovaIzvodjenja();
+
+        if (!naziv || !sifra || !espb) {
+            prikaziObavest('error', 'Naziv, šifra i ESPB su obavezni.');
+            return;
+        }
+
+        if (!editId && ishodIds.length === 0) {
+            prikaziObavest('error', 'Morate izabrati bar jedan ishod.');
+            return;
+        }
+
+        if (!editId && izvodjenja.length === 0) {
+            prikaziObavest('error', 'Morate dodati bar jedno izvođenje.');
+            return;
+        }
+
+        const body = {
+            naziv, sifra, espb,
+            brojCasovaPredavanja, brojCasovaVezbi, brojCasovaLab,
+            ciljPredmeta, sadrzajPredmeta
+        };
+
+
+        if (ishodIds.length > 0) body.ishodIds = ishodIds;
+        if (literatura.length > 0) body.literatura = literatura;
+        if (izvodjenja.length > 0) body.izvodjenja = izvodjenja;
+
+
+        if (!editId) {
+            body.ishodIds = ishodIds;
+            body.izvodjenja = izvodjenja;
+        }
+
+        const url = editId ? `${API_PREDMETI}/${editId}` : API_PREDMETI;
+        const method = editId ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                const poruka = err.fieldErrors
+                    ? Object.values(err.fieldErrors).join(', ')
+                    : (err.message || 'Greška pri čuvanju.');
+                prikaziObavest('error', poruka);
+                return;
+            }
+
+            window.location.href = 'predmeti.html';
+        } catch (e) {
+            prikaziObavest('error', 'Greška pri komunikaciji sa serverom.');
+        }
+    }
+
+    function formatOblik(oblik) {
+        const mapa = {'PREDAVANJA': 'Predavanja', 'VEZBE': 'Vežbe', 'LABORATORIJSKE_VEZBE': 'Lab. vežbe'};
+        return mapa[oblik] || oblik;
+    }
+
+    function prikaziObavest(tip, poruka) {
+        const el = document.getElementById('notice');
+        el.textContent = poruka;
+        el.className = `notice ${tip} show`;
+        window.scrollTo(0, 0);
+        if (tip === 'success') setTimeout(() => el.className = 'notice', 4000);
+    }
+
+    function esc(str) {
+        if (!str && str !== 0) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    init();
+</script>
+</body>
+</html>

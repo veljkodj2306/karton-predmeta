@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predmeti | Karton predmeta</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <nav class="nav">
+        <a class="logo" href="predmeti.html">Karton predmeta</a>
+        <div class="nav-links">
+            <a href="predmeti.html" class="active">Predmeti</a>
+            <a href="nastavnici.html">Nastavnici</a>
+            <a href="ishodi.html">Ishodi</a>
+        </div>
+    </nav>
+</header>
+
+<main class="page">
+    <div id="notice" class="notice"></div>
+
+    <div class="page-header">
+        <div>
+            <h1>Predmeti</h1>
+            <p>Pregled i upravljanje kartonom predmeta.</p>
+        </div>
+        <a class="btn primary" href="predmet-forma.html">+ Dodaj predmet</a>
+    </div>
+
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Šifra</th>
+                    <th>Naziv</th>
+                    <th>ESPB</th>
+                    <th>Ishodi</th>
+                    <th>Izvođenja</th>
+                    <th>Literatura</th>
+                    <th>Akcije</th>
+                </tr>
+                </thead>
+                <tbody id="tabelaBody">
+                <tr>
+                    <td colspan="7" class="empty-row">Učitavanje...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script>
+    const API = '/api/predmeti';
+
+    async function ucitaj() {
+        try {
+            const res = await fetch(API);
+            if (!res.ok) throw new Error('Greška pri učitavanju.');
+            const predmeti = await res.json();
+            prikaziTabelu(predmeti);
+        } catch (e) {
+            prikaziObavest('error', e.message);
+        }
+    }
+
+    function prikaziTabelu(predmeti) {
+        const body = document.getElementById('tabelaBody');
+        if (predmeti.length === 0) {
+            body.innerHTML = '<tr><td colspan="7" class="empty-row">Nema predmeta.</td></tr>';
+            return;
+        }
+        body.innerHTML = predmeti.map(p => `
+            <tr>
+                <td><span class="badge gray">${esc(p.sifra)}</span></td>
+                <td><strong>${esc(p.naziv)}</strong></td>
+                <td>${esc(p.espb)}</td>
+                <td>${(p.ishodi || []).map(i => `<span class="badge green">${esc(i.naziv)}</span>`).join('') || '<span style="color:var(--muted);font-size:13px">Nema</span>'}</td>
+                <td>${renderIzvodjenja(p.izvodjenja || [])}</td>
+                <td>${renderLiteratura(p.literatura || [])}</td>
+                <td>
+                    <div class="td-actions">
+                        <a class="btn secondary sm" href="predmet-forma.html?id=${p.id}">Izmeni</a>
+                        <button class="btn danger sm" onclick="obrisi(${p.id})">Obriši</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderIzvodjenja(items) {
+        if (!items.length) return '<span style="color:var(--muted);font-size:13px">Nema</span>';
+        return items.map(i => `
+            <div style="font-size:13px;margin-bottom:4px;">
+                <strong>${esc(i.ime)} ${esc(i.prezime)}</strong><br>
+                <span style="color:var(--muted)">${esc(formatOblik(i.oblikNastave))}</span>
+            </div>
+        `).join('');
+    }
+
+    function renderLiteratura(items) {
+        if (!items.length) return '<span style="color:var(--muted);font-size:13px">Nema</span>';
+        return items.map(l => `
+            <div style="font-size:13px;margin-bottom:4px;">
+                <strong>${esc(l.naslov)}</strong><br>
+                <span style="color:var(--muted)">${esc(l.autor)}, ${esc(l.godina)}</span>
+            </div>
+        `).join('');
+    }
+
+    function formatOblik(oblik) {
+        const mapa = {'PREDAVANJA': 'Predavanja', 'VEZBE': 'Vežbe', 'LABORATORIJSKE_VEZBE': 'Lab. vežbe'};
+        return mapa[oblik] || oblik;
+    }
+
+    async function obrisi(id) {
+        if (!confirm('Da li ste sigurni da želite da obrišete ovaj predmet?')) return;
+
+        try {
+            const res = await fetch(`${API}/${id}`, {method: 'DELETE'});
+            if (!res.ok) {
+                const err = await res.json();
+                prikaziObavest('error', err.message || 'Greška pri brisanju.');
+                return;
+            }
+            prikaziObavest('success', 'Predmet je obrisan.');
+            await ucitaj();
+        } catch (e) {
+            prikaziObavest('error', 'Greška pri komunikaciji sa serverom.');
+        }
+    }
+
+    function prikaziObavest(tip, poruka) {
+        const el = document.getElementById('notice');
+        el.textContent = poruka;
+        el.className = `notice ${tip} show`;
+        window.scrollTo(0, 0);
+        if (tip === 'success') setTimeout(() => el.className = 'notice', 4000);
+    }
+
+    function esc(str) {
+        if (!str && str !== 0) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    ucitaj();
+</script>
+</body>
+</html>
