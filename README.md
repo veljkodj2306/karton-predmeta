@@ -1,4 +1,4 @@
-Karton Predmeta
+# Karton Predmeta
 
 Ovaj projekat predstavlja Spring Boot aplikaciju za upravljanje kartonom predmeta.
 
@@ -12,7 +12,7 @@ U aplikaciji postoji i jednostavan frontend napravljen kroz HTML, CSS i JavaScri
 
 Projekat je razvijen pomoću Spring Boot-a, MySQL baze podataka, Liquibase-a za migracije baze, Swagger-a za testiranje endpoint-a, kao i biblioteka Spring Data JPA, MapStruct, Lombok i Bean Validation.
 
-Struktura projekta
+# Struktura projekta
 
 Aplikacija ima sledeću strukturu:
 
@@ -26,7 +26,7 @@ Exception
 
 Kontroleri koriste DTO klase umesto Entity klasa za primanje i vraćanje podataka. Dodat je i globalni exception handler za obradu grešaka.
 
-Baza i pokretanje
+# Baza i pokretanje
 
 Potrebna je MySQL baza podataka pod nazivom karton_predmeta.
 
@@ -36,7 +36,7 @@ Aplikacija se pokreće preko klase KartonPredmetaApplication.
 
 Pri pokretanju aplikacije Liquibase kreira tabele i ubacuje početne podatke za testiranje.
 
-Frontend
+# Frontend
 
 Frontend fajlovi se nalaze u folderu:
 
@@ -51,7 +51,7 @@ http://localhost:8080/predmet-forma.html
 
 Frontend omogućava pregled, dodavanje, izmenu i brisanje podataka kroz jednostavne stranice.
 
-Endpoint-i
+# Endpoint-i
 
 Aplikacija uključuje endpoint-e za predmete:
 
@@ -78,7 +78,7 @@ GET /api/ishodi/{id}
 POST /api/ishodi
 DELETE /api/ishodi/{id}
 
-Swagger
+# Swagger
 
 Swagger dokumentacija se može pronaći na linku:
 
