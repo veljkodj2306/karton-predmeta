@@ -8,10 +8,12 @@ import com.fon.kartonpredmeta.mapper.NastavnikMapper;
 import com.fon.kartonpredmeta.repository.IzvodjenjeRepository;
 import com.fon.kartonpredmeta.repository.NastavnikRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class NastavnikService {
 
     private final NastavnikRepository nastavnikRepository;

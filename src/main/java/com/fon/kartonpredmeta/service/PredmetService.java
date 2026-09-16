@@ -9,11 +9,13 @@ import com.fon.kartonpredmeta.exception.NotFoundException;
 import com.fon.kartonpredmeta.mapper.PredmetMapper;
 import com.fon.kartonpredmeta.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class PredmetService {
 
     private final PredmetRepository predmetRepository;
@@ -47,7 +49,7 @@ public class PredmetService {
     public PredmetResponse create(PredmetCreateRequest request) {
 
         if (predmetRepository.existsBySifra(request.getSifra())) {
-            throw new ConflictException("Predmet sa ovom siform postoji");
+            throw new ConflictException("Predmet sa ovom sifrom postoji");
         }
 
 
@@ -87,7 +89,7 @@ public class PredmetService {
 
         if (request.getSifra() != null && !request.getSifra().equals(predmet.getSifra())) {
             if (predmetRepository.existsBySifra(request.getSifra())) {
-                throw new ConflictException("Predmet sa ovom siform postoji");
+                throw new ConflictException("Predmet sa ovom sifrom postoji");
             }
 
 
@@ -211,12 +213,15 @@ public class PredmetService {
     }
 
 
-    public void deleteLiteraturaOdPredmeta(Long literaturaId) {
-        Literatura literatura = literaturaRepository.findById(literaturaId)
-                .orElseThrow(() -> new NotFoundException("Literatura sa id=" + literaturaId + " ne postoji"));
+    public void deleteLiteraturaOdPredmeta(Long predmetId, Long literaturaId) {
+        Predmet predmet = predmetRepository.findById(predmetId)
+                .orElseThrow(() -> new NotFoundException("Predmet sa id=" + predmetId + " ne postoji"));
 
-        List<Predmet> predmeti = predmetRepository.findByLiteratura_Id(literaturaId);
-        predmeti.forEach(p -> p.getLiteratura().removeIf(l -> l.getId().equals(literaturaId)));
-        predmetRepository.saveAll(predmeti);
+        boolean uklonjena = predmet.getLiteratura().removeIf(l -> l.getId().equals(literaturaId));
+        if (!uklonjena) {
+            throw new NotFoundException("Literatura sa id=" + literaturaId + " nije povezana sa predmetom");
+        }
+
+        predmetRepository.save(predmet);
     }
 }

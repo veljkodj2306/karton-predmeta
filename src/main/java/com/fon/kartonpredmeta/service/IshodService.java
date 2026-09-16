@@ -9,10 +9,12 @@ import com.fon.kartonpredmeta.mapper.IshodMapper;
 import com.fon.kartonpredmeta.repository.IshodRepository;
 import com.fon.kartonpredmeta.repository.PredmetRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class IshodService {
 
     private final IshodRepository ishodRepository;
