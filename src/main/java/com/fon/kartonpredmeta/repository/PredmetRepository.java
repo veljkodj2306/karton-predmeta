@@ -13,6 +13,4 @@ public interface PredmetRepository extends JpaRepository<Predmet, Long> {
     boolean existsBySifra(String sifra);
 
     List<Predmet> findByIshodi_Id(Long ishodId);
-
-    List<Predmet> findByLiteratura_Id(Long literaturaId);
 }

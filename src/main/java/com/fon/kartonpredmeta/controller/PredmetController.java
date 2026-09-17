@@ -54,6 +54,15 @@ public class PredmetController {
     }
 
 
+    @Operation(summary = "Vraca predmet po sifri")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Predmet pronadjen"),
+            @ApiResponse(responseCode = "404", description = "Predmet ne postoji",
+                    content = @Content(schema = @Schema(implementation = ApiError.class)))})
+    @GetMapping("/sifra/{sifra}")
+    public PredmetResponse getPredmetBySifra(@PathVariable String sifra) {
+        return predmetService.findBySifra(sifra);
+    }
+
     @Operation(summary = "Kreiramo predmet")
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Predmet kreiran"),
             @ApiResponse(responseCode = "400",
@@ -117,14 +126,14 @@ public class PredmetController {
     }
 
 
-    @Operation(summary = "Brisanje literature sa predmeta")
-    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Literatura obrisana"),
-            @ApiResponse(responseCode = "404", description = "Literatura nije pronadjena",
+    @Operation(summary = "Uklanjanje literature sa predmeta")
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Literatura uklonjena sa predmeta"),
+            @ApiResponse(responseCode = "404", description = "Predmet ili literatura na predmetu ne postoje",
                     content = @Content(schema = @Schema(implementation = ApiError.class)))})
-    @DeleteMapping("/literatura/{literaturaId}")
+    @DeleteMapping("/{predmetId}/literatura/{literaturaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteLiteratura(@PathVariable Long literaturaId) {
-        predmetService.deleteLiteraturaOdPredmeta(literaturaId);
+    public void deleteLiteratura(@PathVariable Long predmetId, @PathVariable Long literaturaId) {
+        predmetService.deleteLiteraturaOdPredmeta(predmetId, literaturaId);
     }
 
 }

@@ -198,7 +198,7 @@
                         <strong>${esc(l.naslov)}</strong>
                         <span>${esc(l.autor)}, ${esc(l.godina)}</span>
                     </div>
-                    <button class="btn danger sm" onclick="obrisiLiteraturu(${l.id})">Obriši</button>
+                    <button class="btn danger sm" onclick="obrisiLiteraturu(${l.id})">Ukloni</button>
                 </div>
             `).join('');
         }
@@ -223,9 +223,9 @@
     }
 
     async function obrisiLiteraturu(literaturaId) {
-        if (!confirm('Da li ste sigurni da želite da uklonite ovu literaturu sa predmeta?')) return;
+        if (!confirm('Da li ste sigurni da želite da uklonite ovu literaturu sa ovog predmeta?')) return;
         try {
-            const res = await fetch(`${API_PREDMETI}/literatura/${literaturaId}`, {method: 'DELETE'});
+            const res = await fetch(`${API_PREDMETI}/${editId}/literatura/${literaturaId}`, {method: 'DELETE'});
             if (!res.ok) {
                 const err = await res.json();
                 prikaziObavest('error', err.message || 'Greška pri brisanju.');
